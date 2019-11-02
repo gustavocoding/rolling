@@ -1,0 +1,2 @@
+cd /
+:read-attribute(name=server-state)
