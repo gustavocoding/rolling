@@ -1,11 +1,11 @@
 ### TESTING ROLLING UPGRADES FOR JDG/RHDG
 
-Simple and automated way to test a rolling upgrade between two JDG/RHD version.
+Simple and automated way to test a rolling upgrade between two JDG/RHD versions.
 Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7.3.x```
 
 #### Requirements
 
-* xmlstartlet
+* xmlstarlet
  
     ```dnf install xmlstarlet```
 
