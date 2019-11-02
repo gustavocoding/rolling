@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e -o pipefail -o errtrace -o functrace
-set -x
 
 usage() {
    cat << EOF
