@@ -30,12 +30,11 @@ Download and extract the JDG/RHDG versions that will be used as source and targe
 Execute the script:
 
 ```
-./do-rolling.sh -s jdg-6.6.2-home/ -t jdg-7.1.0-home/ b 2.5 -n urn:infinispan:server:core:8.4 
+./do-rolling.sh -s jdg-6.6.2-home/ -t jdg-7.1.0-home/ b 2.5
 ```
 
 This will create a 2-node cluster of JDG-6.6.2, load some data, then creates a 2-node cluster of JDG 7.1.x
-and will copy the data from the source to the target cluster.
-It will use Hot Rod version ```2.5``` for the source cluster, and ```urn:infinispan:server:core:8.4``` for the namespace of the config in the target cluster
+and will copy the data from the source to the target cluster, using Hot Rod version ```2.5``` for the source cluster.
 
 A successful run should print:
 

@@ -4,16 +4,15 @@ set -e -o pipefail -o errtrace -o functrace
 
 usage() {
    cat << EOF
-      Usage: ./do-rolling.sh [-s source server home] [-t target server home] [-b source server Hot Rod version] [-n target server cache config XML namespace]
+      Usage: ./do-rolling.sh [-s source server home] [-t target server home] [-b source server Hot Rod version]
       -s Path to the source server installation
       -t Path to the target server installation
       -b Hot Rod version of the source cluster, example: '2.5'
-      -n namespace of the cache config element of the target cluster, example: 'urn:infinispan:server:core:8.4'
       -h help
 EOF
 }
 
-while getopts ":s:t:b:n:h" o; do
+while getopts ":s:t:b:h" o; do
     case "${o}" in
         h) usage; exit 0;;
         s)
@@ -25,9 +24,6 @@ while getopts ":s:t:b:n:h" o; do
         b)
             b=${OPTARG}
             ;;
-        n)
-            n=${OPTARG}
-            ;;
         *)
             usage; exit 0
             ;;
@@ -35,7 +31,7 @@ while getopts ":s:t:b:n:h" o; do
 done
 shift $((OPTIND-1))
 
-if [[ -z "${s}"  ]] || [[ -z "${t}"  ]] || [[ -z "${b}"  ]] || [[ -z "${n}"  ]]
+if [[ -z "${s}"  ]] || [[ -z "${t}"  ]] || [[ -z "${b}"  ]]
 then
     usage
     exit 1
@@ -44,7 +40,6 @@ fi
 SOURCE_HOME=${s}
 TARGET_HOME=${t}
 HOT_ROD=${b}
-NAMESPACE=${n}
 
 TARGET_CFG_DIR=$TARGET_HOME/standalone/configuration/
 
@@ -55,7 +50,7 @@ TARGET_CONF=clustered-rolling.xml
 echo -e "\nADDING REMOTE STORE CONFIG TO TARGET CLUSTER AT ${TARGET_CFG_DIR}${TARGET_CONF}\n"
 rm -f $TARGET_CFG_DIR/$TARGET_CONF
 cp $TARGET_CFG_DIR/clustered.xml $TARGET_CFG_DIR/$TARGET_CONF
-./add-remote-store.sh -f $TARGET_CFG_DIR/$TARGET_CONF -c default -b ${HOT_ROD} -n ${NAMESPACE}
+./add-remote-store.sh -f $TARGET_CFG_DIR/$TARGET_CONF -c default -b ${HOT_ROD}
 
 echo -e "\nSTARTING A 2-NODE TARGET CLUSTER from $TARGET_HOME\n"
 ./prepare-cluster.sh -n target -s $TARGET_HOME -c $TARGET_CONF -p 2000 -l n -m 234.99.54.15
