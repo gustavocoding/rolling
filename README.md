@@ -15,11 +15,11 @@ Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7
  
 * java 8:
 
-    ```sdk u java 8.0.212-zulu```
+    ```sdk u java 8.0.232-amzn```
     
 * scala
 
-    ```sdk use scala 2.11.12```
+    ```sdk use scala 2.11.0```
     
 * Memory: At least 10GB RAM to hold a total of 4 servers with their data
     

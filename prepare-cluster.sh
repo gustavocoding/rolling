@@ -90,6 +90,7 @@ LOAD=${l:-y}
 CLUSTER_NAME=${n:-cluster}
 MCAST=${m:-234.99.54.14}
 
+mkdir -p logs
 start node1-$CLUSTER_NAME $PORT_OFFSET $MCAST
 $SERVER_HOME/bin/add-user.sh -u user -p passwd-123 -a &>/dev/null
 
