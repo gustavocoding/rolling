@@ -7,7 +7,7 @@ usage() {
       Usage: ./do-rolling.sh [-s source server home] [-t target server home] [-b source server Hot Rod version]
       -s Path to the source server installation
       -t Path to the target server installation
-      -b Hot Rod version of the source cluster, example: '2.5'
+      -b Hot Rod version of the source cluster (Default: '2.5')
       -h help
 EOF
 }
@@ -31,7 +31,7 @@ while getopts ":s:t:b:h" o; do
 done
 shift $((OPTIND-1))
 
-if [[ -z "${s}"  ]] || [[ -z "${t}"  ]] || [[ -z "${b}"  ]]
+if [[ -z "${s}"  ]] || [[ -z "${t}"  ]]
 then
     usage
     exit 1
@@ -39,7 +39,7 @@ fi
 
 SOURCE_HOME=${s}
 TARGET_HOME=${t}
-HOT_ROD=${b}
+HOT_ROD=${b:-"2.5"}
 
 TARGET_CFG_DIR=$TARGET_HOME/standalone/configuration/
 

@@ -30,7 +30,7 @@ Download and extract the JDG/RHDG versions that will be used as source and targe
 Execute the script:
 
 ```
-./do-rolling.sh -s jdg-6.6.2-home/ -t jdg-7.1.0-home/ b 2.5
+./do-rolling.sh -s jdg-6.6.2-home/ -t jdg-7.1.0-home/ -b 2.5
 ```
 
 This will create a 2-node cluster of JDG-6.6.2, load some data, then creates a 2-node cluster of JDG 7.1.x

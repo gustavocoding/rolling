@@ -21,7 +21,7 @@ function is-ready() {
 }
 
 function start() {
-  nohup $SERVER_HOME/bin/standalone.sh -c $CONFIG_FILE -Djboss.node.name=$1 -Djava.net.preferIPv4Stack=true -Djboss.socket.binding.port-offset=$2 -Djboss.default.multicast.address=$3 > logs/server-$1.log &
+  nohup $SERVER_HOME/bin/standalone.sh -c $CONFIG_FILE -Djboss.node.name=$1 -Djboss.server.data.dir=$SERVER_HOME/standalone/data/$1 -Djava.net.preferIPv4Stack=true -Djboss.socket.binding.port-offset=$2 -Djboss.default.multicast.address=$3 > logs/server-$1.log &
   while ! is-ready $2 2>/dev/null
   do
    echo "waiting for server to start"
