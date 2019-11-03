@@ -30,11 +30,11 @@ Download and extract the JDG/RHDG versions that will be used as source and targe
 Execute the script:
 
 ```
-./do-rolling.sh -s jdg-6.6.2-home/ -t jdg-7.1.0-home/ -b 2.5
+./do-rolling.sh -s jdg-6.6.2-home/ -t jdg-7.1.0-home/
 ```
 
 This will create a 2-node cluster of JDG-6.6.2, load some data, then creates a 2-node cluster of JDG 7.1.x
-and will copy the data from the source to the target cluster, using Hot Rod version ```2.5``` for the source cluster.
+and will copy the data from the source to the target cluster, using the Default Hot Rod version ```2.5``` for the source cluster (the minimum version a cluster must have to support rolling upgrades).
 
 A successful run should print:
 
