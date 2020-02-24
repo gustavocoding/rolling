@@ -61,6 +61,7 @@ $TARGET_HOME/bin/cli.sh --connect controller=127.0.0.1:11990 -c -c "/subsystem=d
 
 echo -e "\nDISCONNECTION FROM SOURCE CLUSTER\n"
 $TARGET_HOME/bin/cli.sh --connect controller=127.0.0.1:11990 -c -c "/subsystem=datagrid-infinispan/cache-container=clustered/distributed-cache=default:disconnect-source(migrator-name=hotrod)"
+$TARGET_HOME/bin/cli.sh --connect controller=127.0.0.1:12990 -c -c "/subsystem=datagrid-infinispan/cache-container=clustered/distributed-cache=default:disconnect-source(migrator-name=hotrod)"
 
 echo -e "\nCHECKING MIGRATED DATA\n"
 $TARGET_HOME/bin/cli.sh --connect controller=127.0.0.1:11990 -c -c "/subsystem=datagrid-infinispan/cache-container=clustered/distributed-cache=default:read-attribute(name=number-of-entries)"

@@ -21,7 +21,8 @@ function is-ready() {
 }
 
 function start() {
-  nohup $SERVER_HOME/bin/standalone.sh -c $CONFIG_FILE -Djboss.node.name=$1 -Djboss.server.data.dir=$SERVER_HOME/standalone/data/$1 -Djava.net.preferIPv4Stack=true -Djboss.socket.binding.port-offset=$2 -Djboss.default.multicast.address=$3 > logs/server-$1.log &
+  DEBUG_PORT=$(( $2 + 2000 ))
+  nohup $SERVER_HOME/bin/standalone.sh -c $CONFIG_FILE --debug $DEBUG_PORT -Djboss.node.name=$1 -Djboss.server.data.dir=$SERVER_HOME/standalone/data/$1 -Djava.net.preferIPv4Stack=true -Djboss.socket.binding.port-offset=$2 -Djboss.default.multicast.address=$3 > logs/server-$1.log &
   while ! is-ready $2 2>/dev/null
   do
    echo "waiting for server to start"
@@ -98,5 +99,5 @@ start node2-$CLUSTER_NAME $ALT_PORT $MCAST
 
 if [[ $LOAD = "y" ]]
 then
-  ./bin/load.sh --entries 50000 --write-batch 1000 --phrase-size 1000 --hotrodversion ${HOT_ROD}
+  ./bin/load.sh --entries 500000 --write-batch 1000 --phrase-size 100 --hotrodversion ${HOT_ROD}
 fi
