@@ -2,6 +2,9 @@
 
 set -e -o pipefail -o errtrace -o functrace
 
+. ./lib.sh
+
+
 usage() {
    cat << EOF
       Usage: ./do-rolling.sh [-s source server home] [-t target server home] [-b source server Hot Rod version]
@@ -41,16 +44,22 @@ SOURCE_HOME=${s}
 TARGET_HOME=${t}
 HOT_ROD=${b:-"2.5"}
 
+MAJOR_SOURCE=$(rhdgVersion $SOURCE_HOME)
+MAJOR_TARGET=$(rhdgVersion $TARGET_HOME)
+
 TARGET_CFG_DIR=$TARGET_HOME/standalone/configuration/
 
 echo -e "\nSTARTING AND POPULATING A 2-NODE SOURCE CLUSTER from $SOURCE_HOME\n"
 ./prepare-cluster.sh -s $SOURCE_HOME -b ${HOT_ROD} -n source 
 
-TARGET_CONF=clustered-rolling.xml
-echo -e "\nADDING REMOTE STORE CONFIG TO TARGET CLUSTER AT ${TARGET_CFG_DIR}${TARGET_CONF}\n"
-rm -f $TARGET_CFG_DIR/$TARGET_CONF
-cp $TARGET_CFG_DIR/clustered.xml $TARGET_CFG_DIR/$TARGET_CONF
-./add-remote-store.sh -f $TARGET_CFG_DIR/$TARGET_CONF -c default -b ${HOT_ROD}
+
+if [ $MAJOR_TARGET -ne 8 ]; then
+   TARGET_CONF=clustered-rolling.xml
+   echo -e "\nADDING REMOTE STORE CONFIG TO TARGET CLUSTER AT ${TARGET_CFG_DIR}${TARGET_CONF}\n"
+   rm -f $TARGET_CFG_DIR/$TARGET_CONF
+   cp $TARGET_CFG_DIR/clustered.xml $TARGET_CFG_DIR/$TARGET_CONF
+   ./add-remote-store.sh -f $TARGET_CFG_DIR/$TARGET_CONF -c default -b ${HOT_ROD}
+fi
 
 echo -e "\nSTARTING A 2-NODE TARGET CLUSTER from $TARGET_HOME\n"
 ./prepare-cluster.sh -n target -s $TARGET_HOME -c $TARGET_CONF -p 2000 -l n -m 234.99.54.15

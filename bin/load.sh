@@ -59,7 +59,7 @@ clientBuilder.addServer().host("localhost").port(11222)
 clientBuilder.marshaller(new UTF8StringMarshaller())
 if(hotrodversion != null) clientBuilder.protocolVersion(hotrodversion)
 val rcm = new RemoteCacheManager(clientBuilder.build)
-val cache = rcm.getCache[Int,String]
+val cache = rcm.getCache[Int,String]("default")
 cache.clear
 
 (1 to entries)
