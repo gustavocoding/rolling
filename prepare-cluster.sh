@@ -106,7 +106,7 @@ DEFAULT_CFG=clustered.xml
 
 MAJOR=$(rhdgVersion $SERVER_HOME)
 
-if [ $MAJOR -eq 8]; then 
+if [ $MAJOR -eq 8 ]; then
    NODE_NAME_PROP=infinispan.node.name
    DATADIR_PROP=infinispan.server.data.path
    PORT_OFFSET_PROP=infinispan.socket.binding.port-offset
@@ -123,8 +123,6 @@ start node1-$CLUSTER_NAME $PORT_OFFSET $MCAST
 
 if [ $MAJOR -ne 8 ]; then
   $SERVER_HOME/bin/add-user.sh -u user -p passwd-123 -a &>/dev/null
-else
-  curl -v -XPOST -H "Content-Type: application/json" -d '{"distributed-cache":{"mode":"SYNC"}}' http://127.0.0.1:$(( 11222 + $PORT_OFFSET ))/rest/v2/caches/default
 fi
 
 start node2-$CLUSTER_NAME $ALT_PORT $MCAST
