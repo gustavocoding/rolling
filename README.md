@@ -15,7 +15,7 @@ Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7
  
 * java 8:
 
-    ```sdk u java 8.0.232-amzn```
+    ```sdk use java 8.0.252-amzn```
     
 * scala
 
