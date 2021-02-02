@@ -11,11 +11,12 @@ usage() {
       -s Path to the source server installation
       -t Path to the target server installation
       -b Hot Rod version of the source cluster (Default: '2.5')
+      -e Number of entries (Default: '500000')
       -h help
 EOF
 }
 
-while getopts ":s:t:b:h" o; do
+while getopts ":s:t:b:h:e" o; do
     case "${o}" in
         h) usage; exit 0;;
         s)
@@ -26,6 +27,9 @@ while getopts ":s:t:b:h" o; do
             ;;
         b)
             b=${OPTARG}
+            ;;
+        e)
+            e=${OPTARG}
             ;;
         *)
             usage; exit 0
@@ -43,6 +47,7 @@ fi
 SOURCE_HOME=${s}
 TARGET_HOME=${t}
 HOT_ROD=${b:-"2.5"}
+NUM_ENTRIES=${e:-500000}
 
 MAJOR_SOURCE=$(rhdgVersion $SOURCE_HOME)
 MAJOR_TARGET=$(rhdgVersion $TARGET_HOME)
@@ -68,17 +73,23 @@ echo -e "\nSTARTING A 2-NODE TARGET CLUSTER from $TARGET_HOME\n"
 
 if [ $MAJOR_TARGET -eq 8 ]; then
    echo -e "\nCreating cache in the target cluster with remote store\n"
-   curl -XPOST -H "Content-Type: application/json" -d '{"distributed-cache":{"mode":"SYNC","persistence":{"remote-store":{"protocol-version":"'${HOT_ROD}'", "hotrod-wrapping":true,"raw-values":true,"cache":"default","remote-server":{"host":"127.0.0.1","port":11222}}}}}' http://127.0.0.1:13222/rest/v2/caches/default
+   curl --digest -u user:passwd-123 -XPOST -H "Content-Type: application/json" --digest -u user:passwd-123 -d '{"distributed-cache":{"mode":"SYNC","persistence":{"remote-store":{"protocol-version":"'${HOT_ROD}'", "hotrod-wrapping":true,"raw-values":true,"cache":"default","remote-server":{"host":"127.0.0.1","port":11222}}}}}' http://127.0.0.1:13222/rest/v2/caches/default
 
    echo -e "\nDOING ROLLING UPGRADE\n"
-   curl http://127.0.0.1:13222/rest/v2/caches/default?action=sync-data
+   curl --digest -u user:passwd-123 http://127.0.0.1:13222/rest/v2/caches/default?action=sync-data
 
    echo -e "\nDISCONNECTION FROM SOURCE CLUSTER\n"
-   curl http://127.0.0.1:13222/rest/v2/caches/default?action=disconnect-source
-   curl http://127.0.0.1:14222/rest/v2/caches/default?action=disconnect-source
+   curl --digest -u user:passwd-123 http://127.0.0.1:13222/rest/v2/caches/default?action=disconnect-source
+   curl --digest -u user:passwd-123 http://127.0.0.1:14222/rest/v2/caches/default?action=disconnect-source
 
    echo -e "\nCHECKING MIGRATED DATA\n"
-   curl http://127.0.0.1:14222/rest/v2/caches/default?action=size
+   response=$(curl --digest -u user:passwd-123 http://127.0.0.1:14222/rest/v2/caches/default?action=size)
+   if [ "$response" -eq "$NUM_ENTRIES" ]; then
+     echo 'default cache - TEST PASSED'
+   else
+     echo 'default cache - TEST FAILED'
+   fi
+
 else
   # Execute a rolling upgrade
   echo -e "\nDOING ROLLING UPGRADE\n"

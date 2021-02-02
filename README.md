@@ -44,7 +44,7 @@ STARTING AND POPULATING A 2-NODE SOURCE CLUSTER from servers/infinispan-server-6
 waiting for server to start
 waiting for server to start
 
-Loading 50000 entries with write batch size of 1000 and phrase size of 1000
+Loading 500000 entries with write batch size of 1000 and phrase size of 1000
 
 Nov 02, 2019 9:24:02 AM org.infinispan.client.hotrod.impl.protocol.Codec20 readNewTopologyAndHash
 INFO: ISPN004006: localhost:11222 sent new topology view (id=2, age=0) containing 2 addresses: [127.0.0.1:11222, 127.0.0.1:12222]
@@ -68,7 +68,7 @@ CHECKING MIGRATED DATA
 
 {
     "outcome" => "success",
-    "result" => 50000
+    "result" => 500000
 }
 ```
 
