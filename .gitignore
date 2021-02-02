@@ -3,3 +3,4 @@ load.sh.jar
 logs
 .idea
 bin/load.sh.jar
+.jbang/

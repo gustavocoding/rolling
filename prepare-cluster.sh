@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e -o pipefail -o errtrace -o functrace
+set -e  -o pipefail -o errtrace -o functrace
 
 . ./lib.sh
 
@@ -15,7 +15,7 @@ function jdg7-is-ready() {
 
 function jdg8-is-ready() {
    local offset=$1
-   $(curl  --silent --output /dev/null http://localhost:$(( 11222 + offset ))/rest/v2/cache-managers/default/health)
+   $(curl --digest -u user:passwd-123  --silent --output /dev/null http://localhost:$(( 11222 + offset ))/rest/v2/cache-managers/default/health)
 }
 
 function is-ready() {
@@ -53,7 +53,7 @@ usage() {
 EOF
 }
 
-while getopts ":s:c:b:p:l:n:m:h" o; do
+while getopts ":s:c:b:p:l:n:m:e:h" o; do
     case "${o}" in
         h) usage; exit 0;;
         s)
@@ -77,6 +77,9 @@ while getopts ":s:c:b:p:l:n:m:h" o; do
         m)
             m=${OPTARG}
             ;;
+        e)
+            e=${OPTARG}
+            ;;
         *)
             usage; exit 0
             ;;
@@ -92,6 +95,7 @@ fi
 
 SERVER_HOME=${s}
 HOT_ROD=${b:-2.5}
+NUM_ENTRIES=${e:-500000}
 PORT_OFFSET=${p:-0}
 ALT_PORT=$(( PORT_OFFSET + 1000 ))
 LOAD=${l:-y}
@@ -113,6 +117,7 @@ if [ $MAJOR -eq 8 ]; then
    MULTICAST_PROP_NAME=jgroups.mcast_addr
    EXECUTABLE=$SERVER_HOME/bin/server.sh
    DEFAULT_CFG=infinispan.xml
+   $SERVER_HOME/bin/cli.sh user create user -p passwd-123 &>/dev/null
 fi
 
 CONFIG_FILE=${c:-$DEFAULT_CFG}
@@ -129,5 +134,5 @@ start node2-$CLUSTER_NAME $ALT_PORT $MCAST
 
 if [[ $LOAD = "y" ]]
 then
-  ./bin/load.sh --entries 500000 --write-batch 1000 --phrase-size 100 --hotrodversion ${HOT_ROD}
+   ./jbang bin/Load.java --entries ${NUM_ENTRIES} --write-batch 1000 --phrase-size 100 --hotrodversion ${HOT_ROD}
 fi
