@@ -17,10 +17,6 @@ Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7
 
     ```sdk use java 8.0.252-amzn```
     
-* scala
-
-    ```sdk use scala 2.11.0```
-    
 * Memory: At least 10GB RAM to hold a total of 4 servers with their data
     
 #### Usage
