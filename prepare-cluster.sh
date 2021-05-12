@@ -5,25 +5,27 @@ set -e  -o pipefail -o errtrace -o functrace
 
 function jdg6-is-ready() {
    local offset=$1
-   $($SERVER_HOME/bin/cli.sh --connect localhost:$(( 9999 + offset ))  --file=server-ready.cli | grep -q running)
+   CLI=$(cliScript $SERVER_HOME)
+   $($SERVER_HOME/bin/$CLI --connect localhost:$(( 9999 + offset ))  --file=server-ready.cli | grep -q running)
 }
 
 function jdg7-is-ready() {
    local offset=$1
-    $($SERVER_HOME/bin/cli.sh --controller=localhost:$(( 9990 + offset )) -c ":read-attribute(name=server-state)" | grep -q running)
+   CLI=$(cliScript $SERVER_HOME)
+   $($SERVER_HOME/bin/$CLI --controller=localhost:$(( 9990 + offset )) -c ":read-attribute(name=server-state)" | grep -q running)
 }
 
 function jdg8-is-ready() {
    local offset=$1
-   $(curl --digest -u user:passwd-123  --silent --output /dev/null http://localhost:$(( 11222 + offset ))/rest/v2/cache-managers/default/health)
+   $(curl --silent --output /dev/null http://localhost:$(( 11222 + offset ))/rest/v2/cache-managers/default/health)
 }
 
 function is-ready() {
-   if [ $MAJOR -eq 6 ]; then
+   if [ $VERSION -eq 6 ]; then
      jdg6-is-ready $1
-   elif [ $MAJOR -eq 7 ]; then
+   elif [ $VERSION -eq 7 ]; then
      jdg7-is-ready $1
-   elif [ $MAJOR -eq 8 ]; then
+   elif is8 $VERSION; then
      jdg8-is-ready $1
    fi
 }
@@ -34,7 +36,7 @@ function start() {
   while ! is-ready $2 2>/dev/null
   do
    echo "waiting for server to start"
-   sleep 1;
+   sleep 5;
   done
 }
 export JAVA_OPTS="-Xmx2g"
@@ -108,16 +110,15 @@ PORT_OFFSET_PROP=jboss.socket.binding.port-offset
 EXECUTABLE=$SERVER_HOME/bin/standalone.sh
 DEFAULT_CFG=clustered.xml
 
-MAJOR=$(rhdgVersion $SERVER_HOME)
+VERSION=$(rhdgVersion $SERVER_HOME)
 
-if [ $MAJOR -eq 8 ]; then
+if is8 "$VERSION"; then
    NODE_NAME_PROP=infinispan.node.name
    DATADIR_PROP=infinispan.server.data.path
    PORT_OFFSET_PROP=infinispan.socket.binding.port-offset
    MULTICAST_PROP_NAME=jgroups.mcast_addr
    EXECUTABLE=$SERVER_HOME/bin/server.sh
    DEFAULT_CFG=infinispan.xml
-   $SERVER_HOME/bin/cli.sh user create user -p passwd-123 &>/dev/null
 fi
 
 CONFIG_FILE=${c:-$DEFAULT_CFG}
@@ -126,13 +127,14 @@ mkdir -p logs
 
 start node1-$CLUSTER_NAME $PORT_OFFSET $MCAST
 
-if [ $MAJOR -ne 8 ]; then
-  $SERVER_HOME/bin/add-user.sh -u user -p passwd-123 -a &>/dev/null
-fi
+createUser $SERVER_HOME user passwd-123
 
 start node2-$CLUSTER_NAME $ALT_PORT $MCAST
 
 if [[ $LOAD = "y" ]]
 then
+   if is8 $VERSION; then
+    curl -H "Content-Type: application/json" -d '{"distributed-cache":{"mode":"SYNC"}}' http://127.0.0.1:$(( 11222 + offset ))/rest/v2/caches/default
+   fi
    ./jbang bin/Load.java --entries ${NUM_ENTRIES} --write-batch 1000 --phrase-size 100 --hotrodversion ${HOT_ROD}
 fi

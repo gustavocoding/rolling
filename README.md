@@ -1,7 +1,7 @@
 ### TESTING ROLLING UPGRADES FOR JDG/RHDG
 
 Simple and automated way to test a rolling upgrade between two JDG/RHDG versions.
-Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7.3.x```,```8.0x```
+Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7.3.x```,```8.0.x```,```8.1.x```, ```8.2x```
 
 #### Requirements
 
@@ -13,9 +13,9 @@ Supported versions are: ```6.6.2```, ```7.0.x```, ```7.1.x```, ```7.2.x```, ```7
 
     ```curl -s "https://get.sdkman.io" | bash```
  
-* java 8:
+* java 8 (if using RHDG versions 6.x or 7.x):
 
-    ```sdk use java 8.0.252-amzn```
+    ```sdk install java 8.0.265-open && sdk use java 8.0.265-open```
     
 * Memory: At least 10GB RAM to hold a total of 4 servers with their data
     
