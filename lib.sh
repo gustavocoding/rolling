@@ -1,6 +1,8 @@
 function rhdgVersion() {
  VER=0
- if $1/bin/server.sh --help 2>/dev/null | grep -q -E "12\."; then
+ if $1/bin/server.sh --help 2>/dev/null | grep -q -E "13\."; then
+    VER=8.3
+ elif $1/bin/server.sh --help 2>/dev/null | grep -q -E "12\."; then
     VER=8.2
  elif $1/bin/server.sh --help 2>/dev/null | grep -q -E "11\."; then
     VER=8.1

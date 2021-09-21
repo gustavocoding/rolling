@@ -2,5 +2,8 @@ servers
 load.sh.jar
 logs
 .idea
+logs/
 bin/load.sh.jar
 .jbang/
+/rolling.iml
+*.zip

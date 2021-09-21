@@ -75,7 +75,7 @@ public class Load {
 
         if(protocolValue != null) clientBuilder.protocolVersion(protocolValue);
         RemoteCacheManager rcm = new RemoteCacheManager(clientBuilder.build());
-        RemoteCache<String, String> cache = rcm.getCache("default");
+        RemoteCache<String, String> cache = rcm.getCache("rolling");
         cache.clear();
 
         int nThreads = Runtime.getRuntime().availableProcessors();
